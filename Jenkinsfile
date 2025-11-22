@@ -43,11 +43,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                echo "You can add kubectl apply -f deployment.yaml here"
-            }
-        }
+        
     }
 
     post {
