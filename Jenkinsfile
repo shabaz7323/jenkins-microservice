@@ -1,29 +1,54 @@
 pipeline {
     agent any
 
+    environment {
+        APP_NAME = "sample-app"
+    }
+
     stages {
-        stage('Build') {
+
+        stage('Install Dependencies (Node using Docker)') {
             steps {
-                sh 'npm install'
+                sh '''
+                echo "Running npm install inside Node Docker container..."
+
+                docker run --rm \
+                    -v "$PWD":/usr/src/app \
+                    -w /usr/src/app \
+                    node:18 \
+                    npm install
+                '''
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t sample-app .'
+                sh '''
+                echo "Building Docker Image..."
+                docker build -t $APP_NAME .
+                '''
             }
         }
 
         stage('Docker Push') {
             steps {
-                echo 'Push to registry here'
+                echo "Push to DockerHub here"
             }
         }
 
-        stage('Deploy to K8s') {
+        stage('Deploy to Kubernetes') {
             steps {
-                echo 'kubectl apply -f deployment.yaml'
+                echo "Deploy to Kubernetes here"
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline Completed Successfully!"
+        }
+        failure {
+            echo "Pipeline Failed! Check the logs."
         }
     }
 }
