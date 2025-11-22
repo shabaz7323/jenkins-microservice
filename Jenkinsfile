@@ -1,14 +1,23 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Build with Node') {
+
+        stage('Install Node.js') {
             steps {
-                script {
-                    docker.image('node:18').inside {
-                        sh 'npm install'
-                    }
-                }
+                sh '''
+                # Install Node.js 18 manually inside Jenkins container
+                curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+                apt-get install -y nodejs
+                node -v
+                npm -v
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm install'
             }
         }
 
