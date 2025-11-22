@@ -1,12 +1,14 @@
 pipeline {
-    agent {
-        docker { image 'node:18' }
-    }
-
+    agent any
+    
     stages {
-        stage('Build') {
+        stage('Build with Node') {
             steps {
-                sh 'npm install'
+                script {
+                    docker.image('node:18').inside {
+                        sh 'npm install'
+                    }
+                }
             }
         }
 
@@ -18,7 +20,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                echo 'Push to registry here'
+                echo 'Push to DockerHub here'
             }
         }
 
