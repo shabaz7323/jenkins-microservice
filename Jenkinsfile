@@ -2,19 +2,6 @@ pipeline {
     agent any
 
     stages {
-
-        stage('Install Node.js') {
-            steps {
-                sh '''
-                # Install Node.js 18 manually inside Jenkins container
-                curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-                apt-get install -y nodejs
-                node -v
-                npm -v
-                '''
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'npm install'
@@ -29,7 +16,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                echo 'Push to DockerHub here'
+                echo 'Push to registry here'
             }
         }
 
