@@ -2,15 +2,22 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME = "sample-app"
+        APP_NAME = "jenkins-microservice"
+        IMAGE_NAME = "jenkins-microservice:latest"
     }
 
     stages {
 
-        stage('Install Dependencies (Node using Docker)') {
+        stage('Checkout') {
+            steps {
+                echo "Pulling code from GitHub..."
+            }
+        }
+
+        stage('Install Dependencies (Node via Docker)') {
             steps {
                 sh '''
-                echo "Running npm install inside Node Docker container..."
+                echo "Installing Node modules using Node Docker image..."
 
                 docker run --rm \
                     -v "$PWD":/usr/src/app \
@@ -24,21 +31,21 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                echo "Building Docker Image..."
-                docker build -t $APP_NAME .
+                echo "Building Docker image..."
+                docker build -t $IMAGE_NAME .
                 '''
             }
         }
 
         stage('Docker Push') {
             steps {
-                echo "Push to DockerHub here"
+                echo "You can add DockerHub push steps here"
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                echo "Deploy to Kubernetes here"
+                echo "You can add kubectl apply -f deployment.yaml here"
             }
         }
     }
@@ -48,7 +55,7 @@ pipeline {
             echo "Pipeline Completed Successfully!"
         }
         failure {
-            echo "Pipeline Failed! Check the logs."
+            echo "Pipeline Failed. Check errors above!"
         }
     }
 }
